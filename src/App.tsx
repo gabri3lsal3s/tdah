@@ -1,0 +1,23 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import Layout from "@/components/Layout";
+import DiaryForm from "@/pages/DiaryForm";
+import History from "@/pages/History";
+import Analysis from "@/pages/Analysis";
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route index element={<DiaryForm />} />
+            <Route path="diario/:date" element={<DiaryForm />} />
+            <Route path="historico" element={<History />} />
+            <Route path="analise" element={<Analysis />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
+  );
+}
