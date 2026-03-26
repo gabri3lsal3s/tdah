@@ -1,5 +1,5 @@
-import { NavLink, Outlet } from "react-router-dom";
-import { BookOpen, History, BarChart3, Sun, Moon } from "lucide-react";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { BookOpen, History, BarChart3, Settings, Sun, Moon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toast";
 import { useTheme } from "@/components/ThemeProvider";
@@ -8,10 +8,12 @@ const nav = [
   { to: "/", label: "Diário", Icon: BookOpen },
   { to: "/historico", label: "Histórico", Icon: History },
   { to: "/analise", label: "Análise", Icon: BarChart3 },
+  { to: "/configuracoes", label: "Configurações", Icon: Settings },
 ];
 
 export default function Layout() {
   const { theme, toggle } = useTheme();
+  const location = useLocation();
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -37,7 +39,9 @@ export default function Layout() {
 
       {/* Content */}
       <main className="flex-1 max-w-lg mx-auto w-full px-4 py-6 pb-24">
-        <Outlet />
+        <div key={location.pathname} className="animate-in fade-in slide-in-from-bottom-3 duration-500 ease-out">
+          <Outlet />
+        </div>
       </main>
 
       {/* Bottom Nav */}

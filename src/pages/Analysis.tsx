@@ -26,7 +26,7 @@ function Insight({ title, children, kind }: { title: string; children: React.Rea
     neutral: null 
   };
   return (
-    <div className={`rounded border p-4 space-y-1.5 transition-all ${colors[kind]}`}>
+    <div className={`rounded border p-4 space-y-1.5 transition-all animate-in fade-in slide-in-from-left-2 duration-300 ${colors[kind]}`}>
       <div className="flex items-center gap-2 font-bold text-[11px] uppercase tracking-wider">{icons[kind]}{title}</div>
       <p className="text-[11px] text-muted-foreground leading-relaxed font-medium">{children}</p>
     </div>
@@ -95,7 +95,7 @@ export default function Analysis() {
       </div>
 
       {/* Timeline */}
-      <Card className="border-border/60">
+      <Card className="border-border/60 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-75 fill-mode-both">
         <CardHeader className="pb-4">
           <CardTitle className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Evolução Clínica</CardTitle>
           <CardDescription className="text-[9px] text-muted-foreground/50 font-medium leading-none">Escala 0 (melhor) a 3 (pior)</CardDescription>
@@ -119,7 +119,7 @@ export default function Analysis() {
       </Card>
 
       {/* Radar */}
-      <Card className="border-border/60">
+      <Card className="border-border/60 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-150 fill-mode-both">
         <CardHeader className="pb-4">
           <CardTitle className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Resumo de Saúde (% Positivo)</CardTitle>
         </CardHeader>
