@@ -17,25 +17,27 @@ export function saveSyncConfig(config: SyncConfig) {
   localStorage.setItem(SYNC_CONFIG_KEY, JSON.stringify(config));
 }
 
-export async function pushToSheets(): Promise<{ success: boolean; message: string }> {
+export async function pushToSheets(singleEntry?: Entry): Promise<{ success: boolean; message: string }> {
   const config = getSyncConfig();
   if (!config.scriptUrl) return { success: false, message: "URL do Script não configurada" };
 
   try {
-    const entries = await getAllEntries();
+    const isFullSync = !singleEntry;
+    const entries = singleEntry ? [singleEntry] : await getAllEntries();
+    const payload = { isFullSync, entries };
+
     const response = await fetch(config.scriptUrl, {
       method: "POST",
-      mode: "no-cors", // Apps Script doPost often requires no-cors if not handling OPTIONS
+      mode: "no-cors",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(entries),
+      body: JSON.stringify(payload),
     });
 
-    // With no-cors, we can't see the response body, but we assume success if no error is thrown
     config.lastSync = new Date().toISOString();
     saveSyncConfig(config);
-    return { success: true, message: "Dados enviados com sucesso" };
+    return { success: true, message: singleEntry ? "Registro sincronizado" : "Dados enviados com sucesso" };
   } catch (error) {
     console.error("Erro ao sincronizar:", error);
     return { success: false, message: "Falha na sincronização" };

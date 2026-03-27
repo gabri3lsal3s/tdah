@@ -114,7 +114,7 @@ export default function DiaryForm() {
       
       const config = getSyncConfig();
       if (config.autoSync && config.scriptUrl) {
-        pushToSheets().then(res => {
+        pushToSheets(form).then(res => {
           if (!res.success) toast("Aviso: Falha no sync automático", "error");
         });
       }

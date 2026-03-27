@@ -70,6 +70,7 @@ function persist() {
 /* ─── Public API ─── */
 export async function upsertEntry(entry: Entry): Promise<void> {
   const d = await getDb();
+  const s = sanitizeEntry(entry);
   d.run(
     `INSERT INTO entries (
       entry_date, dose_mg, taken_at, sleep_hours, ate_well,
@@ -90,11 +91,11 @@ export async function upsertEntry(entry: Entry): Promise<void> {
       s3_irritable=excluded.s3_irritable, s3_sleep=excluded.s3_sleep,
       notes=excluded.notes`,
     [
-      entry.entry_date, entry.dose_mg, entry.taken_at, entry.sleep_hours, entry.ate_well,
-      entry.s1_attention, entry.s1_organize, entry.s1_restless, entry.s1_impulsive,
-      entry.s2_mindnonstop, entry.s2_thoughts, entry.s2_multithink, entry.s2_brainfog,
-      entry.s3_blunting, entry.s3_creativity, entry.s3_appetite, entry.s3_fatigue,
-      entry.s3_irritable, entry.s3_sleep, entry.notes,
+      s.entry_date, s.dose_mg, s.taken_at, s.sleep_hours, s.ate_well,
+      s.s1_attention, s.s1_organize, s.s1_restless, s.s1_impulsive,
+      s.s2_mindnonstop, s.s2_thoughts, s.s2_multithink, s.s2_brainfog,
+      s.s3_blunting, s.s3_creativity, s.s3_appetite, s.s3_fatigue,
+      s.s3_irritable, s.s3_sleep, s.notes,
     ]
   );
   persist();
@@ -139,4 +140,29 @@ function rowToEntry(cols: string[], values: (string | number | null)[]): Entry {
   const obj: Record<string, unknown> = {};
   cols.forEach((c, i) => (obj[c] = values[i]));
   return obj as unknown as Entry;
+}
+
+function sanitizeEntry(e: Partial<Entry>): Entry {
+  return {
+    entry_date: e.entry_date || new Date().toISOString().split('T')[0],
+    dose_mg: e.dose_mg !== undefined ? e.dose_mg : null,
+    taken_at: e.taken_at || "",
+    sleep_hours: e.sleep_hours !== undefined ? e.sleep_hours : null,
+    ate_well: Number(e.ate_well) || 0,
+    s1_attention: Number(e.s1_attention) || 0,
+    s1_organize: Number(e.s1_organize) || 0,
+    s1_restless: Number(e.s1_restless) || 0,
+    s1_impulsive: Number(e.s1_impulsive) || 0,
+    s2_mindnonstop: Number(e.s2_mindnonstop) || 0,
+    s2_thoughts: Number(e.s2_thoughts) || 0,
+    s2_multithink: Number(e.s2_multithink) || 0,
+    s2_brainfog: Number(e.s2_brainfog) || 0,
+    s3_blunting: Number(e.s3_blunting) || 0,
+    s3_creativity: Number(e.s3_creativity) || 0,
+    s3_appetite: Number(e.s3_appetite) || 0,
+    s3_fatigue: Number(e.s3_fatigue) || 0,
+    s3_irritable: Number(e.s3_irritable) || 0,
+    s3_sleep: Number(e.s3_sleep) || 0,
+    notes: e.notes || "",
+  };
 }

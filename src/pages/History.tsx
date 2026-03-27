@@ -7,6 +7,7 @@ import {
 import * as XLSX from "xlsx";
 import { getAllEntries, deleteEntry, Entry, importData } from "@/lib/db";
 import { formatDateDisplay } from "@/lib/utils";
+import { getSyncConfig, pushToSheets } from "@/lib/syncService";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -42,6 +43,15 @@ export default function History() {
     if (!confirm("Excluir este registro?")) return;
     await deleteEntry(id);
     toast("Registro excluído");
+    
+    // Auto-sync after deletion
+    const config = getSyncConfig();
+    if (config.autoSync && config.scriptUrl) {
+      pushToSheets().then(res => {
+        if (!res.success) toast("Aviso: Falha ao sincronizar exclusão", "error");
+      });
+    }
+
     load();
   }
 
