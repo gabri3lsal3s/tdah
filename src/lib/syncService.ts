@@ -1,4 +1,5 @@
 import { getAllEntries, upsertEntry, Entry } from "./db";
+import { today } from "./utils";
 
 const SYNC_CONFIG_KEY = "tdah_sync_config";
 
@@ -59,6 +60,7 @@ export async function pullFromSheets(): Promise<{ success: boolean; message: str
     const entries: Entry[] = await response.json();
     let count = 0;
     for (const entry of entries) {
+      if (!entry.entry_date) continue;
       await upsertEntry(entry);
       count++;
     }

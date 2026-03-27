@@ -1,3 +1,5 @@
+import { today } from "./utils";
+
 export interface Entry {
   id?: number;
   entry_date: string;
@@ -144,7 +146,7 @@ function rowToEntry(cols: string[], values: (string | number | null)[]): Entry {
 
 function sanitizeEntry(e: Partial<Entry>): Entry {
   return {
-    entry_date: e.entry_date || new Date().toISOString().split('T')[0],
+    entry_date: e.entry_date || today(),
     dose_mg: e.dose_mg !== undefined ? e.dose_mg : null,
     taken_at: e.taken_at || "",
     sleep_hours: e.sleep_hours !== undefined ? e.sleep_hours : null,
